@@ -79,13 +79,20 @@ contract EnglishAction is Ownable, ReentrancyGuard {
         // emit end()
     }
 
+// there was a bug in withdraw fuction.
+// Before, highestbidder could've withdrawn and the state  would've not been set to zero after.
+// hisghestbidder could have bid the highest, then withdraw, wait for auction to end and receive the nft.
+
     function withdraw() external nonReentrant {
         require(bids[msg.sender] > 0, "You have no funds.");
-        uint256 amt = bids[msg.sender];
-        bids[msg.sender] = 0;
-        payable(msg.sender).transfer(amt);
-        //todo 
-        // emit withdraw()
+        if (msg.sender != highestBidder) {
+            uint256 amt = bids[msg.sender];
+            bids[msg.sender] = 0;
+            payable(msg.sender).transfer(amt);
+            //todo 
+            // emit withdraw()
+        }
+        
 
     }
 
