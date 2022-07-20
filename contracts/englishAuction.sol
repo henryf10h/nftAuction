@@ -4,6 +4,7 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@uniswap/contracts/libraries/TransferHelper.sol";
 
 contract EnglishAction is Ownable, ReentrancyGuard {
 
@@ -89,7 +90,7 @@ contract EnglishAction is Ownable, ReentrancyGuard {
         if (msg.sender != highestBidder) {
             uint256 amt = bids[msg.sender];
             bids[msg.sender] = 0;
-            payable(msg.sender).transfer(amt);
+            TransferHelper.safeTransferETH(msg.sender,amt);
             //todo 
             // emit withdraw()
         }
@@ -101,7 +102,7 @@ contract EnglishAction is Ownable, ReentrancyGuard {
         require(balance[msg.sender] > 0, "You have no funds.");
         uint256 amt = balance[msg.sender];
         balance[msg.sender] = 0;
-        payable(msg.sender).transfer(amt);
+        TransferHelper.safeTransferETH(msg.sender,amt);
         //todo
         // emit claim()
     }
